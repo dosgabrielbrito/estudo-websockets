@@ -1,47 +1,54 @@
+import {
+  adicionarDocumento,
+  atualizaDocumento,
+  encontrarDocumento,
+  excluirDocumento,
+  obterDocumentos,
+} from './documentosDB.js';
 import io from './servidor.js';
 
-const documentos = [
-  {
-    nome: 'JavaScript',
-    texto: 'Texto de JavaScript',
-  },
-  {
-    nome: 'Node',
-    texto: 'Texto de Node',
-  },
-  {
-    nome: 'Socket.io',
-    texto: 'Texto de Socket.io',
-  },
-];
-
 io.on('connection', (socket) => {
-  console.log('Um cliente se conectou! ID:', socket.id);
+  //Retorno de eventos de Back-End:
+  socket.on('obter_documentos', async (devolverDocumentos) => {
+    const documentos = await obterDocumentos();
+    devolverDocumentos(documentos);
+  });
 
-  socket.on('selecionar_documento', (nomeDocumento, devolverTexto) => {
+  socket.on('selecionar_documento', async (nomeDocumento, devolverTexto) => {
     socket.join(nomeDocumento);
-
-    const documento = encontrarDocumento(nomeDocumento);
-
+    const documento = await encontrarDocumento(nomeDocumento);
     if (documento) {
       devolverTexto(documento.texto);
     }
   });
 
-  socket.on('texto_editor', ({ texto, nomeDocumento }) => {
-    const documento = encontrarDocumento(nomeDocumento);
+  socket.on('adicionar_documento', async (nome) => {
+    const documentoExiste = (await encontrarDocumento(nome)) !== null;
 
-    if (documento) {
-      documento.texto = texto;
+    if (documentoExiste) {
+      socket.emit('documento_existente', nome);
+    } else {
+      const resultado = await adicionarDocumento(nome);
+
+      if (resultado.acknowledged) {
+        io.emit('adicionar_documento_interface', nome);
+      }
+    }
+  });
+
+  socket.on('texto_editor', async ({ texto, nomeDocumento }) => {
+    const atualizacao = await atualizaDocumento(nomeDocumento, texto);
+
+    if (atualizacao.modifiedCount) {
       socket.to(nomeDocumento).emit('texto_editor_clientes', texto);
     }
   });
-});
 
-function encontrarDocumento(nome) {
-  const documento = documentos.find((documento) => {
-    return documento.nome === nome;
+  socket.on('excluir_documento', async (nomeDocumento) => {
+    const resultado = await excluirDocumento(nomeDocumento);
+
+    if (resultado.acknowledged) {
+      io.emit('excluir_documento_sucesso', nomeDocumento);
+    }
   });
-
-  return documento;
-}
+});

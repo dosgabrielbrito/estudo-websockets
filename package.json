@@ -21,6 +21,7 @@
   "homepage": "https://github.com/dosgabrielbrito/estudo-websockets#readme",
   "dependencies": {
     "express": "^4.21.0",
+    "mongodb": "4.11",
     "socket.io": "^4.7.5"
   },
   "devDependencies": {
