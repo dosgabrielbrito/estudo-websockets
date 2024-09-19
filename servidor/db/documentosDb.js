@@ -1,9 +1,17 @@
-import { documentosColecao } from './dbConnect.js';
+import { documentosColecao } from "./dbConnect.js";
 
-//Operações com o Banco de Dados:
 function obterDocumentos() {
   const documentos = documentosColecao.find().toArray();
   return documentos;
+}
+
+function adicionarDocumento(nome) {
+  const resultado = documentosColecao.insertOne({
+    nome,
+    texto: "",
+  });
+
+  return resultado;
 }
 
 function encontrarDocumento(nome) {
@@ -27,15 +35,6 @@ function atualizaDocumento(nome, texto) {
   );
 
   return atualizacao;
-}
-
-function adicionarDocumento(nome) {
-  const resultado = documentosColecao.insertOne({
-    nome,
-    texto: `Texto de ${nome} do MongoDB.`,
-  });
-
-  return resultado;
 }
 
 function excluirDocumento(nome) {
