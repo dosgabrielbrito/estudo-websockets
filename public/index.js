@@ -1,13 +1,23 @@
-import { emitirAdicionarDocumento } from "./socket-front-index.js";
+import { emitirAdicionarDocumento } from './socket-front-index.js';
+import { obterCookie, removerCookie } from './utils/cookies.js';
 
-const listaDocumentos = document.getElementById("lista-documentos");
-const form = document.getElementById("form-adiciona-documento");
-const inputDocumento = document.getElementById("input-documento");
+const tokenJWT = obterCookie('tokenJWT');
 
-form.addEventListener("submit", (evento) => {
+const listaDocumentos = document.getElementById('lista-documentos');
+const form = document.getElementById('form-adiciona-documento');
+const inputDocumento = document.getElementById('input-documento');
+const botaoLogout = document.getElementById('botao-logout');
+
+botaoLogout.addEventListener('click', () => {
+  removerCookie('tokenJWT');
+  alert('Usuário deslogado com sucesso!');
+  window.location.href = '/login/index.html';
+});
+
+form.addEventListener('submit', (evento) => {
   evento.preventDefault();
   emitirAdicionarDocumento(inputDocumento.value);
-  inputDocumento.value = "";
+  inputDocumento.value = '';
 });
 
 function inserirLinkDocumento(nomeDocumento) {
