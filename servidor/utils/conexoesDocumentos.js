@@ -30,8 +30,6 @@ function removerConexao(nomeDocumento, nomeUsuario) {
   if (indice !== -1) {
     conexoesDocumentos.splice(indice, 1);
   }
-
-  console.log(conexoesDocumentos);
 }
 
 export {
