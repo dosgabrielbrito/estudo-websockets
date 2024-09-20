@@ -4,7 +4,9 @@ function autorizarUsuario(socket, next) {
   const tokenJWT = socket.handshake.auth.token;
 
   try {
-    jwt.verify(tokenJWT, process.env.SEGREDO_JWT);
+    const payloadToken = jwt.verify(tokenJWT, process.env.SEGREDO_JWT);
+
+    socket.emit('autorizacao_sucesso', payloadToken);
 
     next();
   } catch (erro) {
