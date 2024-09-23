@@ -1,6 +1,6 @@
 import { MongoClient } from 'mongodb';
 
-const cliente = new MongoClient(process.env.SRTING_SERVER);
+const cliente = new MongoClient(process.env.STRING_SERVER);
 
 let documentosColecao;
 let usuariosColecao;
