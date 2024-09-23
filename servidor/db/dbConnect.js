@@ -1,8 +1,6 @@
 import { MongoClient } from 'mongodb';
 
-const cliente = new MongoClient(
-  'mongodb+srv://admin:admin@aluradocs.7fxj4.mongodb.net/?retryWrites=true&w=majority&appName=AluraDocs'
-);
+const cliente = new MongoClient(process.env.SRTING_SERVER);
 
 let documentosColecao;
 let usuariosColecao;
